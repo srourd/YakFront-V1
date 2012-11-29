@@ -1,0 +1,258 @@
+extends ../layout
+block content
+
+	include ../mixins/menu.jade
+	include ../mixins/locationChooser.jade
+
+	mixin menu('feed')
+	mixin locationChooser()
+	div#mainFeedWrapper
+		div#search
+			input(type="text", data-provide="typeahead", class="searchInput", value="Search...")
+			div.searchFilters
+				div(data-toggle="buttons-checkbox", class="searchTypes")
+					div(class="btn-group1")
+						button(type="button", class="btn") Actualités
+						button(type="button", class="btn") Discussion
+						button(type="button", class="btn") Evénement
+						button(type="button", class="btn") Infos générales
+				//
+					div(data-toggle="buttons-checkbox", class="searchGenres")
+						div(class="btn-group2)
+							button(type="button", class="btn") Images
+							button(type="button", class="btn") Videos
+							button(type="button", class="btn") Articles
+							button(type="button", class="btn") Infos générales
+				div(data-toggle="buttons-checkbox", class="searchGenres")
+					div(class="dropdown")
+					img(src="/images/tinfoicon.png", class="dropdown-toggle", data-toggle="dropdown", data-title="dfsdfds")
+					ul(class="dropdown-menu input-list", role="menu", aria-labelledby="dLabel")
+						li
+							label
+								|&nbsp;
+								input(type="checkbox")
+								|&nbsp;Images
+						li
+							label
+								|&nbsp;
+								input(type="checkbox")
+								|&nbsp;Videos
+						li
+							label
+								|&nbsp;
+								input(type="checkbox")
+								|&nbsp;Articles
+					//
+						div(class="dropdown")
+						a(class="tooltip", data-original-title="dfsdfsd", rel="tooltip")
+							img(src="/images/categoryicon.png", class="dropdown-toggle", data-toggle="dropdown")
+						ul(class="dropdown-menu input-list", role="menu", aria-labelledby="dLabel")
+							li
+								label
+									|&nbsp;
+									input(type="checkbox")
+									|&nbsp;Category 1
+								ul
+									li
+										test
+							li
+								label
+									|&nbsp;
+									input(type="checkbox")
+									|&nbsp;Category 2
+							li
+								label
+									|&nbsp;
+									input(type="checkbox")
+									|&nbsp;Category 3
+
+			button(type="button", class="btn searchButton") Search
+		div#feedContent
+			//p!= partial('./partials/newsfeed.jade', {infos:infos})
+		div.paging
+			a.next.btn load more 
+			span#loading 
+		div.sets
+			span#resultSet 1
+			|&nbsp;set of results loaded&nbsp;
+		div#PopupContainer
+			div(id="myModal", class="modal hide fade", tabindex="-1", role="dialog", aria-labelledby="myModalLabel", aria-hidden="true", style="width: 80%")
+
+	script
+		var limit = 10;
+		var subSize = 200;
+		$(document).ready(function() {
+
+			$('.typeahead').typeahead();
+
+			$('.btn-group1').button();
+			$('.btn-group2').button();
+
+			$.getJSON('/api/feeds', { page : 1, skip: 0, limit: limit,  yaktype: gup("yaktype")} ,function(data) {
+				var item, title, content, address, more, postedby, date, type, cat;
+				$.each(data.info, function(key,val) {
+					//$('#feedContent').append("<div class=\'item\'><div class=\'title\'>"+val.title+"</div><div class=\'content\'>"+val.content+"</div><div class=\'address\'>"+val.address+"</div></div>");
+
+					item = $("<div />");
+					item.attr("class", "myitem");
+					
+					more = $("<a />");
+					more.attr("class", "more");
+					more.attr("href", "feed/afeeds?id=" + val._id);
+					more.attr("data-toggle", "data-toggle");
+					more.html(val.title);
+
+					title = $("<div />");
+					title.attr("class", "title");
+					title.html("<img class='yakImg' src='/images/yakfav.png' />");
+					title.append(more);
+					
+					postedby = $("<div />");
+					postedby.attr("class", "postedby");
+					
+					date= new Date(val.pubDate);
+					postedby.html("Posted by " + val.origin + " at " + date);
+					
+					title.append(postedby);
+					
+					
+					
+					content = $("<div />");
+					content.attr("class", "content");
+					content.html(val.content.substring(0, subSize));
+					//content.append(more);
+					content.append("<br /><br />");
+					
+					type = $("<div />");
+					type.attr("class", "type");
+					type.html("Type: " + val.yakType);
+					
+					cat = $("<div />");
+					cat.attr("class", "cat");
+					cat.html("Category: " + val.yakCat);
+					
+					//content.append(type);
+					//content.append(cat);
+										
+					address = $("<div />");
+					address.attr("class", "address");
+					address.html(val.address);
+					
+					item.append(title);
+					item.append(content);
+					item.append(address);
+					
+					$("#feedContent").append(item);
+					
+				});
+				setClickableArea();
+			});
+			
+			
+			
+			$(".next").click(function(){
+				var currentPage = parseInt($("#resultSet").html().trim());
+				currentPage = currentPage + 1;
+				var skip = (currentPage - 1)*limit;
+				$(".next").hide();
+				$("#loading").html("loading...");
+				$.getJSON('/api/feeds', { page : currentPage, skip: skip, limit: limit, yaktype: gup("yaktype")} ,function(data) {
+				var item, title, content, address, more, postedby, date, type, cat;
+				if(data.info.length == 0)
+				{
+				$(".paging").html("no more results to show");
+				return;
+				}
+				$.each(data.info, function(key,val) {
+				//$('#feedContent').append("<div class=\'item\'><div class=\'title\'>"+val.title+"</div><div class=\'content\'>"+val.content+"</div><div class=\'address\'>"+val.address+"</div></div>");
+				item = $("<div />");
+				item.attr("class", "myitem");
+				
+				more = $("<a />");
+				more.attr("class", "more");
+				more.attr("href", "feed/afeeds?id=" + val._id);
+				more.attr("data-toggle", "data-toggle");
+				more.html(val.title);
+
+				title = $("<div />");
+				title.attr("class", "title");
+				title.html("<img class='yakImg' src='/images/yakfav.png' />");
+				title.append(more);
+				
+				postedby = $("<div />");
+				postedby.attr("class", "postedby");
+				
+				date= new Date(val.pubDate);
+				postedby.html("Posted by " + val.origin + " at " + date);
+				
+				title.append(postedby);
+				
+				
+				
+				content = $("<div />");
+				content.attr("class", "content");
+				content.html(val.content.substring(0, subSize));
+				//content.append(more);
+				content.append("<br /><br />");
+				
+				type = $("<div />");
+				type.attr("class", "type");
+				type.html("Type: " + val.yakType);
+				
+				cat = $("<div />");
+				cat.attr("class", "cat");
+				cat.html("Category: " + val.yakCat);
+				
+				//content.append(type);
+				//content.append(cat);
+									
+				address = $("<div />");
+				address.attr("class", "address");
+				address.html(val.address);
+				
+				item.append(title);
+				item.append(content);
+				item.append(address);
+				
+				$("#feedContent").append(item);
+				$("#resultSet").html(currentPage);
+				$(".next").show();
+				$("#loading").html("");
+				});
+				setClickableArea();
+				});
+				var height = $('#feedContent')[0].scrollHeight;
+				$("html, body").animate({ scrollTop: $(document).height() }, 1000);
+				
+			});
+		});
+		
+		function setClickableArea()
+		{
+			$(".more").click(function(e){
+				e.preventDefault();
+				$("#myModal").html("");
+				$("#myModal").load("/txt/loadingModal.txt", function(){
+					$("#myModal").modal();
+					$('#myModal').on('shown', function () {
+						$.getJSON('/api/afeeds', { id: "50c61d1a1d22b3c93b000166"} ,function(data) {
+							$("#myModalLabel").html(data.info[0].title);
+							$(".modal-body").html("<div>" + data.info[0].content + "</div>");
+						});	
+					})
+				});
+				
+			});
+		}
+		function gup( name )
+		{
+		name = name.replace(/[\[]/,"\\\[").replace(/[\]]/,"\\\]");
+		var regexS = "[\\?&]"+name+"=([^&#]*)";
+		var regex = new RegExp( regexS );
+		var results = regex.exec( window.location.href );
+		if( results == null )
+		return "";
+		else
+		return results[1];
+		}
+		

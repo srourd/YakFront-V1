@@ -1,0 +1,190 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="google-site-verification" content="yJE1jh0gSWAaZjht2gC5DYFt_Ob8WS3PMiDGFzRnRRk" />
+<title>DivBox - jquery multibox</title>
+<meta name="keywords" content="jquery multibox, multibox jquery, divbox, jquery lightbox" />
+<meta name="description" content="DivBox plugin is simple, easy style format,support draggable,supports a range of multimedia formats, no need extra markup and is used to overlay images on the current page through the power and flexibility of jQuery´s selector" />
+<!-- Main CSS for website -->
+<link type="text/css" rel="stylesheet" href="css/style.css" />
+<!-- End -->
+
+<script type="text/javascript" src="jquery-1.3.2.min.js"></script>
+<script type="text/javascript" src="jquery.ui.draggable.js"></script>
+
+<!-- Include js and css for Divbox -->
+<script type="text/javascript" src="divbox.js"></script>
+<link type="text/css" rel="stylesheet" href="css/divbox.css" />
+<!-- End -->
+
+</head>
+
+<body>
+
+<div id="page-wrap">
+    
+        <img src="images/logo.png" alt="jquery multibox" id="pic" />
+  <div id="contact-info" class="vcard">
+           <h1 class="fn" style=" height:30px; padding-top: 10px;">Divbox 1.2 </h1>
+			
+			<ul>
+			<li><a href="http://jquery.phpbasic.com/divbox#usage">How to use</a></li>
+			<li><a href="http://jquery.phpbasic.com/divbox#options">View full options</a></li>
+			</ul>
+			
+	  Contact: <a href="mailto:w2ajax@gmail.com">w2ajax@gmail.com</a>	<br />
+  Visit <a href="http://jquery.phpbasic.com/divbox">http://jquery.phpbasic.com/divbox</a> for newest version </div>
+           
+  <div class="clear"></div>
+		
+						
+
+		<div><a name="example"></a>
+		<h2><a href="/divbox#example">Example</a></h2>
+			<h6> Gallery</h6>
+			<p>
+				<a href="photos/image1.jpg" title="Title 1 Title 1 Title 1 Title 1 Title 1 Title 1 Title 1 Title 1 Title 1 Title 1 Title 1 Title 1 Title 1 Title 1 Title 1 " class="lightbox1"><img src="photos/thumb_image1.jpg" /></a>
+				<a href="photos/image2.jpg" title="Title 2" class="lightbox1"><img src="photos/thumb_image2.jpg" /></a>
+				<a href="photos/image3.jpg" title="Title 3" class="lightbox1"><img src="photos/thumb_image3.jpg" /></a>
+				<a href="photos/image4.jpg" title="Title 4" class="lightbox1"><img src="photos/thumb_image4.jpg" /></a>
+				<a href="photos/image5.jpg" title="Title 5" class="lightbox1"><img src="photos/thumb_image5.jpg" /></a>
+		  </p>
+				<script type="text/javascript">
+				$('a.lightbox1').divbox();
+				</script>
+		    <div style="float: left; width: 200px;">
+				<h6>Single</h6>
+				<a href="photos/image1.jpg" title="Title 1" class="lightbox2"><img src="photos/thumb_image1.jpg" /></a>
+				<a href="photos/image2.jpg" title="Title 2" class="lightbox2"><img src="photos/thumb_image2.jpg" /></a>
+			</div>
+			
+			<div style="float: left; width: 200px;">
+				<h6>HTML descriptions</h6>
+				<a href="photos/image1.jpg" title="Title 1" class="lightbox3" rel="descript_1"><img src="photos/thumb_image1.jpg" /></a>
+				<a href="photos/image2.jpg" title="Title 2" class="lightbox3" rel="descript_2"><img src="photos/thumb_image2.jpg" /></a>
+				<p style="display: none;" id="descript_1">HTML <strong>Description</strong> <a target="_blank" href="http://jquery.phpbasic.com"><img src="images/cart.gif"  border="0" /></a></p>
+				<p style="display: none;" id="descript_2">HTML <em>Description</em> 2</p>
+			</div>
+				<script type="text/javascript">
+				$('a.lightbox2').divbox({caption: true, caption_control: false});
+				var opt = {
+					caption: function(obj){
+						return $('#'+$(obj).attr('rel')).html();
+					}
+				}
+				$('a.lightbox3').divbox(opt);
+				</script>
+		 	 <div class="clear"></div>	
+		 		<div style="float: left; width: 200px;">
+				<h6>Media types</h6>
+				  <a href="photos/video.flv" class="lightbox">flv example</a><br />
+				  <a href="photos/music.mp3" class="lightbox">mp3 example</a><br />
+                  <a href="photos/video.mp4" class="lightbox">mp4 example</a><br />
+				  <a href="photos/media.wmv" class="lightbox">wmv example</a><br />
+				  <a href="photos/flash.swf" class="lightbox">swf example</a><br />
+				  <a href="http://www.youtube.com/watch?v=Kc1z79bplKE" class="lightbox">Youtube video</a>
+				</div>
+				<div style="float: left; width: 300px;">
+				<h6>More...</h6>
+				<a href="photos/download.zip" class="lightbox">Download link</a><br />
+				<a href="http://google.com" class="lightbox">External link(Iframe)</a><br />
+				<a href="#" class="popup" rel="box_id">HTML Element</a><br />
+				<a href="ajax.html" class="ajax">Ajax</a><br />
+				<a href="photos/image2.jpg" class="api" title="API functions">API functions</a><br />
+				<a href="photos/image2.jpg" class="lang" title="Define languages (mouse hover on close, next, prev buttons to see the changes)">Define languages </a>
+				
+		 		</div>
+				<div id="box_id" style=" display: none;">
+					<ul>
+						<li>Here the text</li>
+						<li>Here the text</li>
+						<li>Here the text</li>
+						<li>Here the text</li>
+						<li>Here the text</li>
+					</ul>
+				</div>
+				
+				<script type="text/javascript">
+				$('.lightbox').divbox({caption: false});
+				$('.popup').divbox({type: 'element',caption: false});
+				$('.ajax').divbox({type: 'ajax',caption: false});
+				var opt = {};
+				opt.api = {
+					start: function(obj){alert('Start...');},
+					beginLoad: function(obj){alert('Begin to load ...');},
+					afterLoad: function(obj){alert('Load success...');},
+					closed: function(obj){alert('Closed...');}
+				}
+				$('.api').divbox(opt);
+				
+				var opt = {};
+				opt.languages = {
+					btn_close: 'Dong',
+					btn_next: 'Sau',
+					btn_prev: 'Truoc',
+					click_full_image: 'Xem hinh lon',
+					error_not_youtube: 'Day khong phai la link youtube',
+					error_cannot_load: "Khong the load trang nay\nMa loi: "
+				}
+				$('.lang').divbox(opt);
+				 </script>
+			
+        </div>
+		 <div class="clear">&nbsp;</div>
+
+		<div><a name="features"></a>
+		
+		<h2>Features </h2>
+		
+          <ul>
+            <li>supports a range of multimedia formats and youtube video </li>
+            <li>auto detects formats or or you can specify the format, useful if your passing a querystring!</li>
+			<li>define languages display </li>
+            <li>support basic APIs  </li>
+			<li>html descriptions</li>
+		  	<li>easy to re-format template</li>
+            <li>support draggable (if <a href="http://jquery.phpbasic.com/jquery.ui.draggable.js">jquery.ui.draggable.js</a> has been included)</li>
+          </ul>
+        </div>
+		
+
+		        
+
+
+    </div>
+<script type="text/javascript">
+var arVersion = navigator.appVersion.split("MSIE")
+var version = parseFloat(arVersion[1])
+
+if ((version >= 5.5) && (document.body.filters)) 
+{
+   for(var i=0; i<document.images.length; i++)
+   {
+      var img = document.images[i]
+      var imgName = img.src.toUpperCase()
+      if (imgName.substring(imgName.length-3, imgName.length) == "PNG")
+      {
+         var imgID = (img.id) ? "id='" + img.id + "' " : ""
+         var imgClass = (img.className) ? "class='" + img.className + "' " : ""
+         var imgTitle = (img.title) ? "title='" + img.title + "' " : "title='" + img.alt + "' "
+         var imgStyle = "display:inline-block;" + img.style.cssText 
+         if (img.align == "left") imgStyle = "float:left;" + imgStyle
+         if (img.align == "right") imgStyle = "float:right;" + imgStyle
+         if (img.parentElement.href) imgStyle = "cursor:hand;" + imgStyle
+         var strNewHTML = "<span " + imgID + imgClass + imgTitle
+         + " style=\"" + "width:" + img.width + "px; height:" + img.height + "px;" + imgStyle + ";"
+         + "filter:progid:DXImageTransform.Microsoft.AlphaImageLoader"
+         + "(src=\'" + img.src + "\', sizingMethod='scale');\"></span>" 
+         img.outerHTML = strNewHTML
+         i = i-1
+      }
+   }
+}
+
+</script>
+</body>
+
+</html>

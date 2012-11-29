@@ -1,0 +1,267 @@
+extends ../layout
+script(src='/javascripts/lib/bootstrap/js/bootstrap-collapse.js')
+block content
+
+	include ../mixins/menu.jade
+	include ../mixins/docsMenu.jade
+	
+	mixin menu('api')
+	
+
+	div.container-fluid
+		div.row-fluid
+			div.span2
+			div.span2.yak-sidebar
+				mixin docsMenu('presentation')
+
+						
+			div.span6
+				div.row-fluid
+					div.content-header
+						div.header-inner
+							h2 Documentation de l'api
+							p.subheader 
+				hr
+				div.row-fluid
+					h3#authentification Authentification
+					p.subheader Yakwala's API uses the OAuth 2.0 protocol for simple, but effective authentication and authorization.
+					h4 Do you need to authenticate?
+					p For the most part, Yakwala's API only requires the use of a client_id. A client_id simply associates your server, script, or program with a specific application. However, some requests require authentication - specifically requests made on behalf of a user. Authenticated requests require an access_token.  These tokens are unique to a user and should be stored securely. Access tokens may expire at any time in the future.
+					br
+					h4 How to get a client id and secret ?
+					p For the moment, ask our team develpement by sending a request at this email : info at yakwala  dot fr
+					hr
+					h3#endpoints Endpoints
+					p.subheader User endpoints
+					
+					
+					// USERS PROFILE
+					table.table.table-bordered  
+						tr
+							th METHODS
+							th URL
+							th DESCRIPTION
+						tr
+							td GET/POST/PUT
+							td /users/<code>user-id</code>
+							td Get the user's data details.
+						tr
+							td(colspan=3)
+								b parameters:
+								ul
+									li access_token:string - the token access
+									li {user:{_id:string}} ( for GET )
+									li {user:} ( for POST and PUT )
+						tr
+							td(colspan=3)
+								b optional parameters:
+								ul			
+									li v=1 - the version of the api
+									li local='fr' - response language
+						tr
+							td(colspan=3)
+								b response:
+								ul
+									li {user : {_id:string, name:string, login:string}}
+					
+					// USERS FEED
+					table.table.table-bordered
+						tr
+							th METHODS
+							th URL
+							th DESCRIPTION
+						tr
+							td GET/POST/DELETE/PUT
+							td /users/feed/<code>user-id</code>
+							td Manage the authenticated user's news feed.
+						tr
+							td(colspan=3)
+								b parameters:
+								ul
+									li access_token:string - the token access
+									li GET : count:int - number of news to get
+									li POST : 
+										ul
+											li info : JSON object 
+											{
+											<br>&nbsp;&nbsp;title:string, 
+											i.muted news title
+											<br>&nbsp;&nbsp;content:string, 
+											i.muted news main content
+											<br>&nbsp;&nbsp;yakcat:['id1xxxx','id2xxxx'], 
+											i.muted array of Yakwala categories
+											<br>&nbsp;&nbsp;yaktype:int,
+											i.muted 
+												ul
+													li Yakwala type : , optional, default : 4 
+													li Values : actu = 1 , agenda = 2 , Infos Pratiques = 3 , Discussion = 4  
+											&nbsp;&nbsp;freetag:[string,string], 
+											i.muted array of string tags
+											<br>&nbsp;&nbsp;pubdate:int, 
+											i.muted date to be published, Unix timestamp
+											<br>&nbsp;&nbsp;placeid:{_id:string}, 
+											i.muted JSON object the place id ( see the /api/place to create a place)
+											br
+											}
+											li picture : posted image 
+												i.muted The photo should be uploaded as a jpeg and the Content-Type should be set to "image/jpeg". Images may not exceed 5MB in size. 
+										ul
+											li returns the info object created
+						tr
+							td(colspan=3)
+								b optional parameters:
+								ul			
+									li v=1 - the version of the api
+									li local='fr' - response language
+						tr
+							td(colspan=3)
+								b response:
+								ul
+									li {user : {_id:string, name:string, login:string}}
+									
+					// USER SEARCH	
+					table.table.table-bordered
+						tr
+							th METHODS
+							th URL
+							th DESCRIPTION
+			
+						tr	
+							td GET
+							td /users/search/<code>string</code>
+							td Search for a user by name.
+						tr
+							td(colspan=3)
+								b parameters:
+								ul
+									li access_token:string - the token access
+									li {user:{_id:string}} for GET
+									li {user:} for POST and PUT
+						tr
+							td(colspan=3)
+								b optional parameters:
+								ul			
+									li v=1 - the version of the api
+									li local='fr' - response language
+						tr
+							td(colspan=3)
+								b response:
+								ul
+									li {user : {_id:string, name:string, login:string}}
+								
+					// USER SUBSCRIBTIONS TO USERS				
+					table.table.table-bordered
+						tr
+							th METHODS
+							th URL
+							th DESCRIPTION
+			
+						tr	
+							td POST/GET/DELETE/PUT
+							td /subscribe/user/<code>user-id</code>
+							td subscribe to a user's feed
+						tr
+							td(colspan=3)
+								b parameters:
+								ul
+									li GET/POST/DELETE/PUT : access_token=string - the token access
+									li DELETE:  usersubs: array of JSON object : [{_id:string},{_id:string},{_id:string}]
+									li POST/PUT : usersubs:  array of JSON object : [{_id:'string',name:'string',login:'string'},{_id:'string',name:'string',login:'string'}] 
+						tr
+							td(colspan=3)
+								b optional parameters:
+								ul			
+									li v=1 - the version of the api
+									li local='fr' - response language
+						
+						tr
+							td(colspan=3)
+								b response:
+								ul
+									li usersubs:[{_id:'string',name:'string',login:'string'},{_id:'string',name:'string',login:'string'}] 
+					
+					// USER SUBSCRIBTIONS TO TAGS
+					table.table.table-bordered
+						tr
+							th METHODS
+							th URL
+							th DESCRIPTION
+			
+						tr	
+							td POST/GET/DELETE/PUT
+							td /subscribe/tag/<code>user-id</code>
+							td subscribe to a tag
+						tr
+							td(colspan=3)
+								b parameters:
+								ul
+									li GET/POST/DELETE/PUT : access_token=string - the token access
+									li DELETE :  tagsubs:[string]
+									li POST/PUT : tagsubs:[string]
+						tr
+							td(colspan=3)
+								b optional parameters:
+								ul			
+									li v=1 - the version of the api
+									li local='fr' - response language
+						tr
+							td(colspan=3)
+								b response:
+								ul
+									li tagsubs:[string]
+
+					// USER FAVPLACE					
+					table.table.table-bordered
+						tr
+							th METHODS
+							th URL
+							th DESCRIPTION
+			
+						tr	
+							td POST/GET/DELETE/PUT
+							td /favplace/<code>user-id</code>
+							td mange user's favorite places
+						tr
+							td(colspan=3)
+								b parameters:
+								ul
+									li GET/POST/DELETE/PUT : access_token=string - the token access
+									li DELETE:  favplace:[{_id:string},{_id:string},{_id:string}] - array of object of ids
+									li POST/PUT : favplace:[{name:string,location:{lat:float,lng:float}},{name:string,location:{lat:float,lng:float}}] - array of object of places
+						tr
+							td(colspan=3)
+								b optional parameters:
+								ul			
+									li v=1 - the version of the api
+									li local='fr' - response language
+						tr
+							td(colspan=3)
+								b response:
+								ul
+									li favplace:[{name:string,location:{lat:float,lng:float}},{name:string,location:{lat:float,lng:float}}]
+									
+					p.subheader Info endpoints
+					table.table.table-bordered
+						tr
+							td GET
+							td /api/geoinfos/
+							td Get infos in the box
+							
+					h3#libraires Librairies
+					p.subheader
+					
+					h4 PHP
+					pre https://github.com/rebe100x/API
+					pre git clone git@github.com:rebe100x/API.git
+					br
+					br
+					hr
+					h3#tou Conditions d'utilisation
+						p.subheader
+					@todo
+			div.span2				
+	script
+		$(document).ready(function() {
+		
+		}); // END READY
+

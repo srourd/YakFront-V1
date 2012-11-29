@@ -1,0 +1,171 @@
+extends ../layout
+block content
+
+	include ../mixins/menu.jade
+	include ../mixins/locationChooser.jade
+
+	mixin menu('feed')
+	mixin locationChooser()
+	div#search
+		input(type="text", data-provide="typeahead")
+		div.dropdown
+			a(class="dropdown-toggle btn", id="dLabel", role="button", data-toggle="dropdown", data-target="#", href="/page.html") Select a Type
+				b(class="caret")
+			ul(class="dropdown-menu", role="menu", aria-labelledby="dLabel")
+				li
+					input(type="checkbox", value="1", class="checkbox") 
+					|&nbsp;Actualitee
+				li
+					input(type="checkbox", value="1", class="checkbox") 
+					|&nbsp;Actualitee
+				li
+					input(type="checkbox", value="1", class="checkbox") 
+					|&nbsp;Actualitee
+				li
+					input(type="checkbox", value="1", class="checkbox") 
+					|&nbsp;Actualitee
+	div#feedContent
+		//p!= partial('./partials/newsfeed.jade', {infos:infos})
+	div.paging
+		span#resultSet 1
+		|&nbsp;set of results loaded&nbsp;
+		br
+		a.next.btn load more 
+		span#loading 
+	div#container
+  
+	script
+		var limit = 10;
+		var subSize = 200;
+		$(document).ready(function() {
+			$('.typeahead').typeahead();
+			$('.dropdown-toggle').dropdown();
+			$.getJSON('/api/feeds', { page : 1, skip: 0, limit: limit,  yaktype: gup("yaktype")} ,function(data) {
+				var item, title, content, address, more, postedby, date, type, cat;
+				$.each(data.info, function(key,val) {
+					//$('#feedContent').append("<div class=\'item\'><div class=\'title\'>"+val.title+"</div><div class=\'content\'>"+val.content+"</div><div class=\'address\'>"+val.address+"</div></div>");
+					item = $("<div />");
+					item.attr("class", "myitem");
+					
+					title = $("<div />");
+					title.attr("class", "title");
+					title.html("<img class='yakImg' src='/images/yakfav.png' />" + val.title);
+					
+					postedby = $("<div />");
+					postedby.attr("class", "postedby");
+					
+					date= new Date(val.pubDate);
+					postedby.html("Posted by " + val.origin + " at " + date);
+					
+					title.append(postedby);
+					
+					more = $("<a />");
+					more.attr("class", "more btn");
+					more.attr("href", "feed/afeeds?id=" + val._id);
+					more.attr("data-toggle", "data-toggle");
+					more.html("read full");
+					
+					content = $("<div />");
+					content.attr("class", "content");
+					content.html(val.content.substring(0, subSize));
+					content.append(more);
+					content.append("<br /><br />");
+					
+					type = $("<div />");
+					type.attr("class", "type");
+					type.html("Type: " + val.yakType);
+					
+					cat = $("<div />");
+					cat.attr("class", "cat");
+					cat.html("Category: " + val.yakCat);
+					
+					content.append(type);
+					content.append(cat);
+										
+					address = $("<div />");
+					address.attr("class", "address");
+					address.html(val.address);
+					
+					item.append(title);
+					item.append(content);
+					item.append(address);
+					
+					$("#feedContent").append(item);
+					
+				});
+				setClickableArea();
+			});
+			
+			
+			
+			$(".next").click(function(){
+				var currentPage = parseInt($("#resultSet").html().trim());
+				currentPage = currentPage + 1;
+				var skip = (currentPage - 1)*limit;
+				$(".next").hide();
+				$("#loading").html("loading...");
+				$.getJSON('/api/feeds', { page : 1, skip: 0, limit: limit,  yaktype: gup("yaktype")} ,function(data) {
+					var item, title, content, address;
+					if(data.info.length == 0)
+					{
+						$(".paging").html("no more results to show");
+						return;
+					}
+					$.each(data.info, function(key,val) {
+						//$('#feedContent').append("<div class=\'item\'><div class=\'title\'>"+val.title+"</div><div class=\'content\'>"+val.content+"</div><div class=\'address\'>"+val.address+"</div></div>");
+						item = $("<div />");
+						item.attr("class", "item");
+						
+						title = $("<div />");
+						title.attr("class", "title");
+						title.html(val.title);
+						
+						more = $("<a />");
+						more.attr("class", "more");
+						more.attr("href", "feed/afeeds?id=" + val._id);
+						more.html("...more");
+					
+						content = $("<div />");
+						content.attr("class", "content");
+						content.html(val.content.substring(0, subSize) + "...");
+						content.append(more);
+						
+						address = $("<div />");
+						address.attr("class", "address");
+						address.html(val.address);
+						
+						item.append(title);
+						item.append(content);
+						item.append(address);
+						
+						$("#feedContent").append(item);
+						$("#resultSet").html(currentPage);
+						$(".next").show();
+						$("#loading").html("");
+					});
+				});
+				var height = $('#feedContent')[0].scrollHeight;
+				$("html, body").animate({ scrollTop: $(document).height() }, 1000);
+				setClickableArea();
+			});
+		});
+		
+		function setClickableArea()
+		{
+			$(".more").click(function(e){
+				e.preventDefault();
+				$("#container").modal();
+			});
+		}
+		function gup( name )
+		{
+		name = name.replace(/[\[]/,"\\\[").replace(/[\]]/,"\\\]");
+		var regexS = "[\\?&]"+name+"=([^&#]*)";
+		var regex = new RegExp( regexS );
+		var results = regex.exec( window.location.href );
+		if( results == null )
+		return "";
+		else
+		return results[1];
+		}
+		
