@@ -99,6 +99,7 @@ block content
 					more = $("<a />");
 					more.attr("class", "more");
 					more.attr("href", "feed/afeeds?id=" + val._id);
+					more.attr("rel", val._id);
 					more.attr("data-toggle", "data-toggle");
 					more.html(val.title);
 
@@ -171,6 +172,7 @@ block content
 				more = $("<a />");
 				more.attr("class", "more");
 				more.attr("href", "feed/afeeds?id=" + val._id);
+				more.attr("rel", val._id);
 				more.attr("data-toggle", "data-toggle");
 				more.html(val.title);
 
@@ -231,11 +233,12 @@ block content
 		{
 			$(".more").click(function(e){
 				e.preventDefault();
+				var relid = $(this).attr("rel");
 				$("#myModal").html("");
 				$("#myModal").load("/txt/loadingModal.txt", function(){
 					$("#myModal").modal();
 					$('#myModal').on('shown', function () {
-						$.getJSON('/api/afeeds', { id: "50c61d1a1d22b3c93b000166"} ,function(data) {
+						$.getJSON('/api/afeeds', { id: relid} ,function(data) {
 							$("#myModalLabel").html(data.info[0].title);
 							$(".modal-body").html("<div>" + data.info[0].content + "</div>");
 						});	
